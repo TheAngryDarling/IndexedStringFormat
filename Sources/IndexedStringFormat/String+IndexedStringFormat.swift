@@ -32,6 +32,7 @@ public extension String {
             
             let fullPattern: String =  String(format[Range<String.Index>(patternMatch.range(at: 0), in: format)!]) //Get full pattern match
             if !matchedPatterns.contains(fullPattern) { //Don't waste time re-processing identical patterns, all patterns are replaced on frist match
+                matchedPatterns.append(fullPattern)
                 let objectIndex: String = String(format[Range<String.Index>(patternMatch.range(at: 1), in: format)!])
                 let objectFormat: String = {
                     guard let r = Range<String.Index>(patternMatch.range(at: 3), in: format) else { return "@" }
@@ -39,14 +40,15 @@ public extension String {
                 }()
                 
                 //objectFormat = String(objectFormat[objectFormat.index(after: objectFormat.startIndex)...])
-                guard let object = arguments[objectIndex] else {
+                
+                guard arguments.keys.contains(objectIndex) else {
                     //If we don't find the object for the key, lets skip and go on to the next
                     continue
                 }
-                let formattedObject = String.formatIndividualObject(object, withFormat: objectFormat, nilReplacement: nilReplacement)
+                let formattedObject = String.formatIndividualObject(arguments[objectIndex]!, withFormat: objectFormat, nilReplacement: nilReplacement)
                 str = str.replacingOccurrences(of: fullPattern, with: formattedObject)
                 
-                matchedPatterns.append(fullPattern)
+                
             }
             
         }
@@ -77,16 +79,23 @@ public extension String {
             
             let fullPattern: String =  String(format[Range<String.Index>(patternMatch.range(at: 0), in: format)!]) //Get full pattern match
             if !matchedPatterns.contains(fullPattern) { //Don't waste time re-processing identical patterns, all patterns are replaced on frist match
+                matchedPatterns.append(fullPattern)
                 let objectIndex: Int = Int(String(format[Range<String.Index>(patternMatch.range(at: 1), in: format)!]))!
                 let objectFormat: String = {
                     guard let r = Range<String.Index>(patternMatch.range(at: 3), in: format) else { return "@" }
                     return String(format[r])
                 }()
+                
+                guard objectIndex >= 0 && objectIndex < arguments.count else {
+                    //If we don't find the object for the index, lets skip and go on to the next
+                    continue
+                }
+                
                 //objectFormat = String(objectFormat[objectFormat.index(after: objectFormat.startIndex)...])
                 let formattedObject = String.formatIndividualObject(arguments[objectIndex], withFormat: objectFormat, nilReplacement: nilReplacement)
                 str = str.replacingOccurrences(of: fullPattern, with: formattedObject)
                 
-                matchedPatterns.append(fullPattern)
+                
             }
             
         }
