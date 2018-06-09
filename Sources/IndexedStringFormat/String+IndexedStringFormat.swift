@@ -216,7 +216,20 @@ public extension String {
                         let mirror = Mirror(reflecting: obj)
                         childObject = {
                             for child in mirror.children {
-                                if child.label == childField { return child.value }
+                                if child.label == childField {
+                                    
+                                    func rootValue(_  o: Any) -> Any? {
+                                        let m = Mirror(reflecting: o)
+                                        guard m.displayStyle == .optional else { return o }
+                                        guard let (_, some) = m.children.first else { return nil }
+                                        return rootValue(some)
+                                        
+                                    }
+                                    
+                                    return rootValue(child.value)
+                                    
+                                    
+                                }
                             }
                             assertionFailure("Object of type \(type(of: obj)) missing property '\(childField)'")
                             return nil

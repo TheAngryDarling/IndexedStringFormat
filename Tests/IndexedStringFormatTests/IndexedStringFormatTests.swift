@@ -2,6 +2,7 @@ import XCTest
 @testable import IndexedStringFormat
 import Foundation
 
+
 final class IndexedStringFormatTests: XCTestCase {
     
     struct TestStruct: CustomStringConvertible {
@@ -60,6 +61,22 @@ final class IndexedStringFormatTests: XCTestCase {
             //}
         }
     }
+    
+    struct OptionalValues {
+        let symbol: String? = "✳️"
+    }
+    
+    func testOptionalValues() {
+        let format: String = "%{log_value:@.symbol} - %{thread}"
+        let thread: String? = nil
+        let objects: [String: Any?] = ["log_value": OptionalValues(),
+                                       "thread": thread]
+        
+        let string = String(withKeyedFormat: format, objects)
+        print(string)
+                                       
+    }
+    
     
 
     static var allTests = [
