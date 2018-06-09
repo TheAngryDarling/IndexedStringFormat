@@ -77,10 +77,19 @@ final class IndexedStringFormatTests: XCTestCase {
                                        
     }
     
+    func testDictValues() {
+        let format: String = "%{obj:@.value}"
+        let dict: [String: Any] = ["value": 1234]
+        let objects: [String: Any] = ["obj": dict]
+        let string = String(withKeyedFormat: format, objects)
+        print(string)
+    }
+    
     
 
     static var allTests = [
         ("testIndexedFormat", testIndexedFormat),
-        ("testKeyedFormat", testKeyedFormat)
+        ("testKeyedFormat", testKeyedFormat),
+        ("testDictValues", testDictValues)
     ]
 }
