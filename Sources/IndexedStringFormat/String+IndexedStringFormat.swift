@@ -22,7 +22,7 @@ public extension String {
         var str: String = format
         
         
-        let regx: NSRegularExpression = try! NSRegularExpression(pattern: "%\\{(\\w+)\\:\\s?([^\\{\\}]+)\\}")
+        let regx: NSRegularExpression = try! NSRegularExpression(pattern: "%\\{(\\w+)(\\:\\s?([^\\{\\}]+))?\\}")
         
         
         let patternMatches: [NSTextCheckingResult] =  regx.matches(in: format, options: [], range: format.__advanceStringFormat_completeNSRange)
@@ -33,7 +33,11 @@ public extension String {
             let fullPattern: String =  String(format[Range<String.Index>(patternMatch.range(at: 0), in: format)!]) //Get full pattern match
             if !matchedPatterns.contains(fullPattern) { //Don't waste time re-processing identical patterns, all patterns are replaced on frist match
                 let objectIndex: String = String(format[Range<String.Index>(patternMatch.range(at: 1), in: format)!])
-                let objectFormat: String = String(format[Range<String.Index>(patternMatch.range(at: 2), in: format)!])
+                let objectFormat: String = {
+                    guard let r = Range<String.Index>(patternMatch.range(at: 3), in: format) else { return "@" }
+                    return String(format[r])
+                }()
+                
                 //objectFormat = String(objectFormat[objectFormat.index(after: objectFormat.startIndex)...])
                 guard let object = arguments[objectIndex] else {
                     //If we don't find the object for the key, lets skip and go on to the next
@@ -63,7 +67,7 @@ public extension String {
         var str: String = format
         
         
-        let regx: NSRegularExpression = try! NSRegularExpression(pattern: "%\\{(\\d+)\\:\\s?([^\\{\\}]+)\\}")
+        let regx: NSRegularExpression = try! NSRegularExpression(pattern: "%\\{(\\d+)(\\:\\s?([^\\{\\}]+))?\\}")
         
         
         let patternMatches: [NSTextCheckingResult] =  regx.matches(in: format, options: [], range: format.__advanceStringFormat_completeNSRange)
@@ -74,7 +78,10 @@ public extension String {
             let fullPattern: String =  String(format[Range<String.Index>(patternMatch.range(at: 0), in: format)!]) //Get full pattern match
             if !matchedPatterns.contains(fullPattern) { //Don't waste time re-processing identical patterns, all patterns are replaced on frist match
                 let objectIndex: Int = Int(String(format[Range<String.Index>(patternMatch.range(at: 1), in: format)!]))!
-                let objectFormat: String = String(format[Range<String.Index>(patternMatch.range(at: 2), in: format)!])
+                let objectFormat: String = {
+                    guard let r = Range<String.Index>(patternMatch.range(at: 3), in: format) else { return "@" }
+                    return String(format[r])
+                }()
                 //objectFormat = String(objectFormat[objectFormat.index(after: objectFormat.startIndex)...])
                 let formattedObject = String.formatIndividualObject(arguments[objectIndex], withFormat: objectFormat, nilReplacement: nilReplacement)
                 str = str.replacingOccurrences(of: fullPattern, with: formattedObject)

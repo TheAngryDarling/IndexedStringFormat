@@ -44,7 +44,7 @@ final class IndexedStringFormatTests: XCTestCase {
         #if !os(macOS) && !os(iOS) && !os(tvOS) && !os(watchOS)
         let format: String = "%{int:d}, %{bool:@}, %{nil:@}, \"%{struct:@}\" - %{nil:@}, %{bool:@}, %{int:@}, \"%{class:@.string}\", \"%{struct:@.string}\", %{struct:@.float%0.2f}"
         #else
-        let format: String = "%{int:d}, %{bool:@}, %{nil:@}, \"%{struct:@}\" - %{nil:@}, %{bool:@}, %{int:@}, \"%{class:@.string}\", \"%{struct:@.string}\", %{struct:@.float%0.2f}, %{nsclass:@.description()}"
+        let format: String = "\"%{struct}\" --- %{int:d}, %{bool:@}, %{nil:@}, \"%{struct:@}\" - %{nil:@}, %{bool:@}, %{int:@}, \"%{class:@.string}\", \"%{struct:@.string}\", %{struct:@.float%0.2f}, %{nsclass:@.description()}"
         #endif
         
         let objects: [String: Any?] = ["int": 1,
