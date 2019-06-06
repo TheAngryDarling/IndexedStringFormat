@@ -33,12 +33,18 @@ final class IndexedStringFormatTests: XCTestCase {
         #endif
         
         let objects: [Any?] = [1, true, nil, TestStruct(string: "String Var", int: 13, bool: false, float: 1.3456), TestSwiftClass(), TestNSClass()]
-        for _ in 1..<100 {
+        
+        var expectedString = "1, true, nil, \"String Var - 13 - false - 1.3456\" - nil, true, 1, \"TestSwiftClass\", \"String Var\", 1.35"
+        #if (os(macOS) || os(iOS) || os(tvOS) || os(watchOS))
+        expectedString += ", TestNSClass"
+        #endif
+        //for _ in 1..<100 {
             //autoreleasepool {
             let string = String(withIndexedFormat: format, objects)
-            print(string)
+            XCTAssert(string == expectedString, "Expected 'expectedString' but found '\(string)'")
+            //print(string)
             //}
-        }
+        //}
     }
     
     func testKeyedFormat() {
@@ -48,18 +54,25 @@ final class IndexedStringFormatTests: XCTestCase {
         let format: String = "\"%{struct}\" --- %{int:d}, %{bool:@}, %{nil:@}, \"%{struct:@}\" - %{nil:@}, %{bool:@}, %{int:@}, \"%{class:@.string}\", \"%{struct:@.string}\", %{struct:@.float%0.2f}, %{nsclass:@.description()}"
         #endif
         
+        
         let objects: [String: Any?] = ["int": 1,
                                        "bool": true,
                                         "nil": nil,
                                         "struct": TestStruct(string: "String Var", int: 13, bool: false, float: 1.3456),
                                         "class": TestSwiftClass(),
                                         "nsclass": TestNSClass()]
-        for _ in 1..<100 {
+        
+        var expectedString = "\"String Var - 13 - false - 1.3456\" --- 1, true, nil, \"String Var - 13 - false - 1.3456\" - nil, true, 1, \"TestSwiftClass\", \"String Var\", 1.35"
+        #if (os(macOS) || os(iOS) || os(tvOS) || os(watchOS))
+        expectedString += ", TestNSClass"
+        #endif
+        //for _ in 1..<100 {
             //autoreleasepool {
             let string = String(withKeyedFormat: format, objects)
-            print(string)
+            XCTAssert(string == expectedString, "Expected 'expectedString' but found '\(string)'")
+            //print(string)
             //}
-        }
+        //}
     }
     
     struct OptionalValues {
@@ -73,7 +86,8 @@ final class IndexedStringFormatTests: XCTestCase {
                                        "thread": thread]
         
         let string = String(withKeyedFormat: format, objects)
-        print(string)
+        XCTAssert(string == "\(OptionalValues().symbol!) - nil", "Expected '\(OptionalValues().symbol!) - nil' but found '\(string)'")
+        //print(string)
                                        
     }
     
@@ -82,7 +96,8 @@ final class IndexedStringFormatTests: XCTestCase {
         let dict: [String: Any] = ["value": 1234]
         let objects: [String: Any] = ["obj": dict]
         let string = String(withKeyedFormat: format, objects)
-        print(string)
+        XCTAssert(string == "1234", "Expected '1234' but found '\(string)'")
+        //print(string)
     }
     
     
@@ -90,6 +105,7 @@ final class IndexedStringFormatTests: XCTestCase {
     static var allTests = [
         ("testIndexedFormat", testIndexedFormat),
         ("testKeyedFormat", testKeyedFormat),
+        ("testOptionalValues", testOptionalValues),
         ("testDictValues", testDictValues)
     ]
 }
