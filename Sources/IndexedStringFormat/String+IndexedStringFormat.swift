@@ -1,23 +1,29 @@
 import Foundation
 
-public extension String {
+extension String {
     
-    /** @brief a helper variable providing a range from startIndex to endIndex */
+    /// A helper variable providing a range from startIndex to endIndex
     private var __advanceStringFormat_completeRange: Range<String.Index> {
         return Range<String.Index>(uncheckedBounds: (lower: self.startIndex, upper: self.endIndex))
     }
-    /** @brief a helper variable that converts the completeRange to an NSRange */
+    /// A helper variable that converts the completeRange to an NSRange
     private var __advanceStringFormat_completeNSRange: NSRange {
         return NSMakeRange(0, self.distance(from: self.startIndex, to: self.endIndex))
     }
     
     
-    /**
-     @brief A formatting init that allows for index specific formatting for parameters.  This is usefull when a developer provides the arguments and user or another developer provides the format.  String format usage: %{key: format}.  When an argument is found using index, will be formatted using standard String(format: %{format}, argument).  When using structs you can access individual properties like so %{key: @.property}  You can also format the child property %{key: @.property%0.2f}
-     @param withIndexedFormat the string format to use
-     @param arguments The arguments to format with he string format
-     @return Returns a new string built from the format and arguments
-     */
+    /// A formatting init that allows for index specific formatting for parameters.
+    ///
+    /// This is usefull when a developer provides the arguments and user or another developer provides the format.
+    /// String format usage: %{key: format}.
+    /// When an argument is found using index, will be formatted using standard String(format: %{format}, argument).
+    /// When using structs you can access individual properties like so %{key: @.property},  You can also format the child property %{key: @.property%0.2f}
+    ///
+    /// - Parameters:
+    ///   - format: The string format to use
+    ///   - nilReplacement: The string representation of nil (default is nil)
+    ///   - arguments: The arguments to format with the string format
+    /// - Returns: Returns a new string built from the format and arguments
     public init(withKeyedFormat format: String, nilReplacement: String = "nil", _ arguments: [String: Any?]) {
         var str: String = format
         
@@ -58,13 +64,18 @@ public extension String {
         
     }
     
-        
-    /**
-     @brief A formatting init that allows for index specific formatting for parameters.  This is usefull when a developer provides the arguments and user or another developer provides the format.  String format usage: %{index: format}.  When an argument is found using index, will be formatted using standard String(format: %{format}, argument).  When using structs you can access individual properties like so %{index: @.property}  You can also format the child property %{index: @.property%0.2f}
-     @param withIndexedFormat the string format to use
-     @param arguments The arguments to format with he string format
-     @return Returns a new string built from the format and arguments
-     */
+    /// A formatting init that allows for index specific formatting for parameters.
+    ///
+    /// This is usefull when a developer provides the arguments and user or another developer provides the format.
+    /// String format usage: %{index: format}.
+    /// When an argument is found using index, will be formatted using standard String(format: %{format}, argument).
+    /// When using structs you can access individual properties like so %{index: @.property},  You can also format the child property %{index: @.property%0.2f}
+    ///
+    /// - Parameters:
+    ///   - format: The string format to use
+    ///   - nilReplacement: The string representation of nil (default is nil)
+    ///   - arguments: The arguments to format with the string format
+    /// - Returns: Returns a new string built from the format and arguments
     public init(withIndexedFormat format: String, nilReplacement: String = "nil", _ arguments: [Any?]) {
         var str: String = format
         
@@ -105,16 +116,30 @@ public extension String {
         
     }
     
-    /**
-     @brief A formatting init that allows for index specific formatting for parameters.  This is usefull when a developer provides the arguments and user or another developer provides the format.  String format usage: %{index:format}.  When an argument is found using index, will be formatted using standard String(format: %{format}, argument).  When using structs you can access individual properties like so %{index: @.property}  You can also format the child property %{index:@.property%0.2f}
-     @param withIndexedFormat the string format to use
-     @param arguments The arguments to format with he string format
-     @return Returns a new string built from the format and arguments
-     */
+    /// A formatting init that allows for index specific formatting for parameters.
+    ///
+    /// This is usefull when a developer provides the arguments and user or another developer provides the format.
+    /// String format usage: %{index: format}.
+    /// When an argument is found using index, will be formatted using standard String(format: %{format}, argument).
+    /// When using structs you can access individual properties like so %{index: @.property},  You can also format the child property %{index: @.property%0.2f}
+    ///
+    /// - Parameters:
+    ///   - format: The string format to use
+    ///   - nilReplacement: The string representation of nil (default is nil)
+    ///   - arguments: The arguments to format with the string format
+    /// - Returns: Returns a new string built from the format and arguments
     public init(withIndexedFormat format: String, nilReplacement: String = "nil", _ arguments: Any?...) {
         self.init(withIndexedFormat: format, nilReplacement: nilReplacement, arguments)
     }
     
+    
+    /// Actual method used to format a specific object
+    ///
+    /// - Parameters:
+    ///   - object: The object to format as a string
+    ///   - format: format pararameters
+    ///   - nilReplacement: The String representation for nil
+    /// - Returns: The formatted string representation of the object
     private static func formatIndividualObject(_ object: Any?, withFormat format: String, nilReplacement: String) -> String {
         var objectFormat = format
         let formatTypes: [String] = ["d","D","u","U","x","X","o","O","f","F","e","E","g","G","c","C","s","S","p","a","A"]
