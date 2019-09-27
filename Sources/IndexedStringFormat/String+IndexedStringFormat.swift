@@ -199,7 +199,7 @@ extension String {
                             
                         }()
                         
-                        #if !os(macOS) && !os(iOS) && !os(tvOS) && !os(watchOS)
+                        #if !_runtime(_ObjC)
                             assertionFailure("Can't access '\(childField)'. Method access is only supported through Objective-C runtime.")
                         #else
                         
